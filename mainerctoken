@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0; //solidity compiler verson
+
+interface ITech20{ //interface 
+
+function totalsupply() external view returns(uint); //to capture the number of tokens in circulation, because it's going to be a number, we're returning (uint) as datatype
+function balanceOf(address account) external view returns (uint); //to capture balance which will be reurned as a number hence, (uint).
+function transfer(address recipient, uint amount) external returns(bool);//for a transfer to be successful, the address of the person in the receiving end(recipent) is needed and the amount to be transferred, and it's going to return a bool(true/false) 
+function allowance(address owner, address spender) external view returns(uint);//this captures the address of the owner of the account, and the address of the recipient that is to spend his money
+function approve(address spender, uint amount) external returns (bool);//this function captures the address of the recipient/spender and the amount approved to spend
+function transferFrom(address spender, address recipient, uint amount) external returns(bool);//this captures the address of the spender who has been approved to spend, the address of whoever he/she wants to send the money to, might be his/her address too, and the amount to be transferred
+
+event Transfer(address indexed from, address indexed to, uint amount); //this event is broadcasting the address the money is coming from, where it's transferrred to, and the amount
+
+event Approval(address indexed owner, address indexed spender, uint amount);//this event is broadcasting the approve function; who approved(owner), the person addressed to(spender), and the amount
+}
+
+
+
+
+
+
+
+
