@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "./tech4deverc20interface.sol"; //our interface is imported here, so we can implement the functions we decleared
+
+contract ERC20 is ITech20{ //this contract inherits the interface
+
+uint public override totalsupply; //captures the totalsupply of token in circulation
+mapping (address => uint) public override balanceOf; //captures the balance and only a mapping can help achieve that.
+mapping(address => mapping(address => uint)) public override allowance; 
+//line 10 is a nested mapping that captures the address of the owner and the address of the person allowed to spend from his money, as well as the amount
+string public name = "tech4dev"; //name of token
+string public symbol ="T4D"; //symbol of the token
+uint public decimals = 18;   //token decimal
+
+function transfer(address recipient, uint amount) external override returns(bool){ //this executes the transfer from an owner to a recipient
+  balanceOf[msg.sender] -=amount; //this shows that the balance of the person calling the contract will be reduced
+  balanceOf[recipient] +=amount; //this shows that the balance of the recipient should be increased
+
+emit Transfer(msg.sender, recipient, amount); //this is simply broadcasting the transfer execution
+return true; //if the tranfer goes through, it will return yes
+}
+
+function approve(address spender, uint amount) external override returns(bool){
+//line 24 is to show the address of the person you're a1lowing to spend the money and amount
+allowance [msg.sender] [spender] = amount; //to a1low, you need the owner's address and the spender's address as well as the amount
+
+emit Approval(msg.sender, spender, amount);//this is braodcating the approve execution
+
+}
+function transferFrom(address sender, address recipient, uint amount) external override returns (bool){
+//line 31 captures the address of the sender and the address of the person he is sending the money to, as well as the amount
+allowance[sender][msg.sender] -=amount; //this line shows that the amount that the spender is approved to transfer 
+balanceOf[sender]-=amount; //this line shows the deduction of all/part of the approved money
+balanceOf[recipient] +=amount;//this line shows that the balance of the recipient will be increased
+
+emit Transfer(sender, recipient, amount); 
+return true;
+}
+
+function mint(uint amount) public{ //this function is used to create more tokens
+balanceOf[msg.sender]+=amount; //add inputed/minted amount to the balance of the person calling the contrac
+totalsupply +=amount; //increase the totalsupply of the token
+
+emit Transfer(address(0), msg.sender, amount);//broadcasting to the frontend
+}
+
+function burn(uint amount)public{ //this function is used to reduce the number of token in circulation
+balanceOf[msg.sender]-=amount;//this line captures the decrement of the balance of the person callin the contract
+totalsupply -=amount;//decreases the total supply of tokens in circulation
+emit Transfer(msg.sender, address(0), amount); //simply broadcasting this burn function
+}
+}
